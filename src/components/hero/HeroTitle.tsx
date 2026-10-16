@@ -1,10 +1,7 @@
 import { Fragment } from 'react';
 import { motion, useReducedMotion, type Variants } from 'framer-motion';
-import { profile } from '../../data/profile';
+import { useContent, useT } from '../../i18n';
 import { EASE } from '../ui/motion';
-
-/** Palabra del título del hero (se anima letra a letra). */
-const TITLE = 'Portafolio';
 
 const plaque: Variants = {
   hidden: {},
@@ -41,6 +38,10 @@ const nameLine: Variants = {
  * desbordar horizontalmente.
  */
 export function HeroTitle() {
+  const t = useT();
+  const { profile } = useContent();
+  /** Palabra del título del hero (se anima letra a letra), ya traducida. */
+  const title = t('hero.title');
   const prefersReducedMotion = useReducedMotion();
 
   return (
@@ -57,16 +58,16 @@ export function HeroTitle() {
       />
       <h1
         id="hero-title"
-        aria-label="Portafolio"
+        aria-label={title}
         className="font-display leading-[0.95] text-ink text-[clamp(3.5rem,12vw,7.5rem)] lg:text-[clamp(4.5rem,9vw,12rem)]"
       >
         <motion.span aria-hidden="true" variants={lettersWrap} className="inline-block">
-          {TITLE.split('').map((char, index) => (
+          {title.split('').map((char, index) => (
             <Fragment key={index}>
               <motion.span variants={letter} className="inline-block">
                 {char}
               </motion.span>
-              {index < TITLE.length - 1 ? '\u200b' : null}
+              {index < title.length - 1 ? '\u200b' : null}
             </Fragment>
           ))}
         </motion.span>

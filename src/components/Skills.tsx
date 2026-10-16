@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
-import { skillCategories, skillEvidence, TECHNICAL_FILTER_ORDER } from '../data/skills';
+import { TECHNICAL_FILTER_ORDER } from '../data/skills';
+import { useContent, useT } from '../i18n';
 import type { SkillCategory } from '../types';
 import { CategoryFilter, type FilterOption } from './skills/CategoryFilter';
 import { SkillCategoryCard } from './skills/SkillCategoryCard';
@@ -32,23 +33,6 @@ const BAND_SKILLS: string[] = [
   'Android Studio',
 ];
 
-/** Categorías técnicas (sin blandas) en el orden de los filtros del CV. */
-const TECHNICAL_CATEGORIES: SkillCategory[] = TECHNICAL_FILTER_ORDER.map((id) =>
-  skillCategories.find((category) => category.id === id),
-).filter((category): category is SkillCategory => category !== undefined);
-
-/** Opciones del filtro: Todas + categorías técnicas (labels exactos del CV). */
-const FILTER_OPTIONS: FilterOption[] = [
-  { id: 'todas', label: 'Todas' },
-  ...TECHNICAL_FILTER_ORDER.map((id) => ({
-    id,
-    label: skillCategories.find((category) => category.id === id)?.label ?? id,
-  })),
-];
-
-/** Categoría de habilidades blandas del CV (nube de chips propia). */
-const SOFT_SKILLS = skillCategories.find((category) => category.id === 'blandas');
-
 /**
  * Skills V2: encabezado grande, banda full-bleed con tiles de 96px y tooltip
  * de evidencia verificable ("Respaldado por: …"), filtro por categoría con
@@ -60,13 +44,32 @@ const SOFT_SKILLS = skillCategories.find((category) => category.id === 'blandas'
  * alinearse con el Container (max-w 1240px) del resto de la página.
  */
 export function Skills() {
+  const t = useT();
+  const { skillCategories, skillEvidence } = useContent();
   const [filter, setFilter] = useState<SkillFilterId>('todas');
   const prefersReducedMotion = useReducedMotion();
 
+  /** Categorías técnicas (sin blandas) en el orden de los filtros del CV. */
+  const technicalCategories: SkillCategory[] = TECHNICAL_FILTER_ORDER.map((id) =>
+    skillCategories.find((category) => category.id === id),
+  ).filter((category): category is SkillCategory => category !== undefined);
+
+  /** Opciones del filtro: Todas + categorías técnicas (labels del idioma activo). */
+  const filterOptions: FilterOption[] = [
+    { id: 'todas', label: t('skills.filterAll') },
+    ...TECHNICAL_FILTER_ORDER.map((id) => ({
+      id,
+      label: skillCategories.find((category) => category.id === id)?.label ?? id,
+    })),
+  ];
+
+  /** Categoría de habilidades blandas del CV (nube de chips propia). */
+  const softSkills = skillCategories.find((category) => category.id === 'blandas');
+
   const visibleCategories =
     filter === 'todas'
-      ? TECHNICAL_CATEGORIES
-      : TECHNICAL_CATEGORIES.filter((category) => category.id === filter);
+      ? technicalCategories
+      : technicalCategories.filter((category) => category.id === filter);
 
   return (
     <section id="skills" aria-labelledby="skills-title" className="py-16 sm:py-20">
@@ -80,10 +83,10 @@ export function Skills() {
         <Container>
           <SectionHeading
             id="skills-title"
-            eyebrow="Stack"
-            title="skills"
+            eyebrow={t('skills.eyebrow')}
+            title={t('skills.title')}
             align="center"
-            subtitle="Lenguajes, bases de datos, web, móvil y nube con los que construyo — cada tecnología de la banda está respaldada por un proyecto, una certificación o mi CV."
+            subtitle={t('skills.subtitle')}
           />
         </Container>
       </div>
@@ -122,12 +125,12 @@ export function Skills() {
         <Container>
           {/* Filtro + grid de categorías (filtra y reordena con layout). */}
           <div className="mt-14 sm:mt-16">
-            <CategoryFilter options={FILTER_OPTIONS} value={filter} onChange={setFilter} />
+            <CategoryFilter options={filterOptions} value={filter} onChange={setFilter} />
             {/* Estado del filtro para lectores de pantalla. */}
             <p aria-live="polite" className="sr-only">
-              {`Mostrando ${visibleCategories.length} ${
-                visibleCategories.length === 1 ? 'categoría' : 'categorías'
-              }`}
+              {t(visibleCategories.length === 1 ? 'skills.showingOne' : 'skills.showingMany', {
+                count: visibleCategories.length,
+              })}
             </p>
             <motion.ul
               layout={!prefersReducedMotion}
@@ -141,7 +144,7 @@ export function Skills() {
             </motion.ul>
           </div>
 
-          {SOFT_SKILLS ? <SoftSkillsCloud category={SOFT_SKILLS} /> : null}
+          {softSkills ? <SoftSkillsCloud category={softSkills} /> : null}
         </Container>
       </div>
     </section>

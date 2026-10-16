@@ -3,6 +3,7 @@ import type {
   KeyboardEvent as ReactKeyboardEvent,
   PointerEvent as ReactPointerEvent,
 } from 'react';
+import { useT } from '../../i18n';
 import { getTileIcon } from './tile-icons';
 import type { SkillEvidence } from './types';
 
@@ -104,6 +105,7 @@ interface SkillTileProps {
  * pantalla.
  */
 export function SkillTile({ name, evidence, index }: SkillTileProps) {
+  const t = useT();
   const [open, setOpen] = useState(false);
   const tileRef = useRef<HTMLButtonElement | null>(null);
   /** Marca de tiempo del último evento de puntero: distingue foco de teclado del foco tras un toque/clic. */
@@ -214,7 +216,7 @@ export function SkillTile({ name, evidence, index }: SkillTileProps) {
           }`}
         >
           <span className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted">
-            Respaldado por
+            {t('skills.backedBy')}
           </span>
           <span className="mt-1 block text-[13px] font-medium leading-snug text-ink">
             {evidence.join(' · ')}
@@ -224,7 +226,7 @@ export function SkillTile({ name, evidence, index }: SkillTileProps) {
       {/* Contenido del tooltip para lectores de pantalla (aria-describedby):
           versión sr-only porque el visual se oculta por opacidad. */}
       <span id={tooltipId} role="tooltip" className="sr-only">
-        Respaldado por: {evidence.join(', ')}
+        {t('skills.backedBySr', { evidence: evidence.join(', ') })}
       </span>
     </button>
   );

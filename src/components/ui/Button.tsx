@@ -19,6 +19,8 @@ interface ButtonProps {
   target?: string;
   /** `rel` del enlace, p. ej. `noopener noreferrer`. */
   rel?: string;
+  /** Atributo `download` del enlace (descarga el recurso enlazado). */
+  download?: boolean | string;
   className?: string;
   onClick?: MouseEventHandler<HTMLElement>;
   'aria-label'?: string;
@@ -50,6 +52,7 @@ export function Button({
   type = 'button',
   target,
   rel,
+  download,
   className,
   onClick,
   'aria-label': ariaLabel,
@@ -94,7 +97,7 @@ export function Button({
 
   if (href) {
     return (
-      <motion.a href={href} target={target} rel={rel} {...motionProps}>
+      <motion.a href={href} target={target} rel={rel} download={download} {...motionProps}>
         {children}
       </motion.a>
     );

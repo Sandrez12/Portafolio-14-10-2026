@@ -1,5 +1,5 @@
 import { motion, useReducedMotion } from 'framer-motion';
-import { profile } from '../../data/profile';
+import { useContent, useT } from '../../i18n';
 import { Reveal } from '../ui/Reveal';
 import { TiltCard } from '../ui/TiltCard';
 import { EASE } from '../ui/motion';
@@ -12,6 +12,8 @@ import { EASE } from '../ui/motion';
  * sólo desktop sin reduced-motion). Reduced-motion: todo estático.
  */
 export function PhotoFrame() {
+  const { profile } = useContent();
+  const t = useT();
   const prefersReducedMotion = useReducedMotion();
 
   return (
@@ -62,7 +64,7 @@ export function PhotoFrame() {
           </div>
           <img
             src={profile.photo}
-            alt={`Retrato de ${profile.name}`}
+            alt={t('about.photoAlt', { name: profile.name })}
             width={460}
             height={368}
             fetchPriority="high"

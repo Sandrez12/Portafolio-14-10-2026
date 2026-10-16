@@ -1,6 +1,5 @@
 import { useReducedMotion } from 'framer-motion';
-import { NAV_LINKS } from '../data/navigation';
-import { profile } from '../data/profile';
+import { useContent, useT } from '../i18n';
 import { EmailIcon, GithubIcon, LinkedinIcon } from './info/icons';
 import { Reveal } from './ui/Reveal';
 
@@ -17,6 +16,8 @@ const NAV_LINK_CLASSES =
  * reduced-motion). Panel #102E2E sin sombras (tokens de la referencia).
  */
 export function Footer() {
+  const t = useT();
+  const { navLinks, profile } = useContent();
   const year = new Date().getFullYear();
   const prefersReducedMotion = useReducedMotion();
 
@@ -30,7 +31,7 @@ export function Footer() {
       className="mt-16 rounded-2xl bg-panel px-6 py-10 sm:mt-20 sm:px-10 lg:px-14 lg:py-14"
     >
       <h2 id="footer-title" className="sr-only">
-        Pie de página
+        {t('footer.heading')}
       </h2>
 
       <Reveal>
@@ -43,9 +44,9 @@ export function Footer() {
         <p className="mt-4 max-w-md text-sm leading-relaxed text-ink-muted">{profile.headline}</p>
       </Reveal>
 
-      <nav aria-label="Navegación del pie de página" className="mt-8">
+      <nav aria-label={t('footer.navAriaLabel')} className="mt-8">
         <ul className="flex flex-wrap gap-x-1 gap-y-1">
-          {NAV_LINKS.map((link) => (
+          {navLinks.map((link) => (
             <li key={link.id}>
               <a href={`#${link.id}`} className={NAV_LINK_CLASSES}>
                 {link.label}
@@ -60,7 +61,7 @@ export function Footer() {
           <li>
             <a
               href={`mailto:${profile.email}`}
-              aria-label="Email"
+              aria-label={t('footer.emailAriaLabel')}
               rel="noreferrer"
               className={SOCIAL_LINK_CLASSES}
             >
@@ -70,7 +71,7 @@ export function Footer() {
           <li>
             <a
               href={profile.githubUrl}
-              aria-label="GitHub"
+              aria-label={t('footer.githubAriaLabel')}
               target="_blank"
               rel="noreferrer noopener"
               className={SOCIAL_LINK_CLASSES}
@@ -81,7 +82,7 @@ export function Footer() {
           <li>
             <a
               href={profile.linkedinUrl}
-              aria-label="LinkedIn"
+              aria-label={t('footer.linkedinAriaLabel')}
               target="_blank"
               rel="noreferrer noopener"
               className={SOCIAL_LINK_CLASSES}
@@ -110,12 +111,12 @@ export function Footer() {
             <path d="M12 19V5" />
             <path d="M5 12l7-7 7 7" />
           </svg>
-          Volver arriba
+          {t('footer.backToTop')}
         </button>
       </div>
 
       <p className="mt-8 text-xs leading-relaxed text-ink-muted sm:text-sm">
-        Hecho con React, TypeScript, Tailwind CSS y Framer Motion · © {year} {profile.name}
+        {t('footer.credits', { year, name: profile.name })}
       </p>
     </footer>
   );

@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
-import { NAV_LINKS, NAV_SECTION_IDS } from '../data/navigation';
+import { NAV_SECTION_IDS } from '../data/navigation';
 import { useActiveSection } from '../hooks/useActiveSection';
+import { useContent, useT } from '../i18n';
 import { Button } from './ui/Button';
+import { LanguageToggle } from './ui/LanguageToggle';
 import { MobileMenu } from './nav/MobileMenu';
 import { ScrollProgress } from './nav/ScrollProgress';
 
@@ -19,6 +21,8 @@ const SOLIDIFY_AFTER = 24;
  * de scroll, cierre al navegar).
  */
 export function Nav() {
+  const { navLinks } = useContent();
+  const t = useT();
   const activeSection = useActiveSection(NAV_SECTION_IDS);
   const prefersReducedMotion = useReducedMotion();
   const [scrolled, setScrolled] = useState(false);
@@ -62,17 +66,17 @@ export function Nav() {
         }`}
       >
         <nav
-          aria-label="Navegación principal"
+          aria-label={t('nav.navAria')}
           className="mx-auto flex h-16 w-full max-w-container items-center justify-between gap-4 px-5 sm:px-8"
         >
           {/* Wordmark: iniciales del nombre (font-display, enlaza a Inicio). */}
-          <a href="#inicio" className="font-display text-2xl leading-none text-ink" aria-label="Inicio">
+          <a href="#inicio" className="font-display text-2xl leading-none text-ink" aria-label={t('nav.homeAria')}>
             AJ
           </a>
 
           {/* Links desktop con scroll-spy + píldora animada (layoutId). */}
           <ul className="hidden items-center gap-1 lg:flex">
-            {NAV_LINKS.map((link) => {
+            {navLinks.map((link) => {
               const isActive = activeSection === link.id;
               return (
                 <li key={link.id}>
@@ -105,9 +109,14 @@ export function Nav() {
             })}
           </ul>
 
+          {/* Selector de idioma ES | EN (desktop), entre los links y el CTA. */}
+          <div className="hidden lg:block">
+            <LanguageToggle />
+          </div>
+
           <div className="hidden lg:block">
             <Button href="#contacto" variant="primary" className="px-5">
-              Contacto
+              {t('nav.cta')}
             </Button>
           </div>
 
@@ -117,7 +126,7 @@ export function Nav() {
             type="button"
             aria-expanded={menuOpen}
             aria-controls="mobile-menu"
-            aria-label={menuOpen ? 'Cerrar menú de navegación' : 'Abrir menú de navegación'}
+            aria-label={menuOpen ? t('nav.closeMenu') : t('nav.openMenu')}
             onClick={() => setMenuOpen((open) => !open)}
             className="inline-flex h-11 w-11 items-center justify-center rounded-lg text-ink lg:hidden"
           >

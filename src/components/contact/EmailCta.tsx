@@ -1,19 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
-import { profile } from '../../data/profile';
+import { useContent, useT } from '../../i18n';
 import { Button } from '../ui/Button';
 
 /** Tiempo (ms) que se muestra el feedback antes de volver al estado normal. */
 const FEEDBACK_MS = 2400;
 
 type CopyStatus = 'idle' | 'copied' | 'selected';
-
-/** Mensajes para la región aria-live del resultado de la copia. */
-const STATUS_MESSAGES: Record<CopyStatus, string> = {
-  idle: '',
-  copied: 'Correo copiado',
-  selected:
-    'No se pudo copiar automáticamente: correo seleccionado, usa Ctrl+C para copiarlo',
-};
 
 function CopyGlyph() {
   return (
@@ -59,9 +51,18 @@ function CheckGlyph() {
  * con el resultado ("Correo copiado").
  */
 export function EmailCta() {
+  const t = useT();
+  const { profile } = useContent();
   const emailRef = useRef<HTMLAnchorElement>(null);
   const [status, setStatus] = useState<CopyStatus>('idle');
   const timerRef = useRef<number | undefined>(undefined);
+
+  // Mensajes para la región aria-live del resultado de la copia (por idioma).
+  const statusMessages: Record<CopyStatus, string> = {
+    idle: '',
+    copied: t('contact.copiedStatus'),
+    selected: t('contact.selectedStatus'),
+  };
 
   // Limpia el temporizador del feedback al desmontar.
   useEffect(() => () => window.clearTimeout(timerRef.current), []);
@@ -101,12 +102,16 @@ export function EmailCta() {
         {profile.email}
       </a>
       <div className="mt-6 flex flex-wrap items-center gap-4">
-        <Button onClick={handleCopy} variant="ghost" aria-label="Copiar correo electrónico">
+        <Button
+          onClick={handleCopy}
+          variant="ghost"
+          aria-label={t('contact.copyButtonAriaLabel')}
+        >
           {status === 'copied' ? <CheckGlyph /> : <CopyGlyph />}
-          {status === 'copied' ? '¡Copiado!' : 'Copiar correo'}
+          {status === 'copied' ? t('contact.copiedButton') : t('contact.copyButton')}
         </Button>
         <p role="status" aria-live="polite" className="sr-only">
-          {STATUS_MESSAGES[status]}
+          {statusMessages[status]}
         </p>
       </div>
     </div>

@@ -1,7 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
-import { NAV_LINKS } from '../../data/navigation';
+import { useContent, useT } from '../../i18n';
 import { Button } from '../ui/Button';
+import { LanguageToggle } from '../ui/LanguageToggle';
 import { EASE } from '../ui/motion';
 
 interface MobileMenuProps {
@@ -20,6 +21,8 @@ const FOCUSABLE_SELECTOR = 'a[href], button:not([disabled])';
  * Reduced motion: aparece/desaparece sin animación.
  */
 export function MobileMenu({ open, onClose }: MobileMenuProps) {
+  const { navLinks } = useContent();
+  const t = useT();
   const panelRef = useRef<HTMLDivElement | null>(null);
   const prefersReducedMotion = useReducedMotion();
 
@@ -76,16 +79,16 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
           ref={panelRef}
           role="dialog"
           aria-modal="true"
-          aria-label="Menú de navegación"
+          aria-label={t('nav.menuDialog')}
           className="fixed inset-0 z-50 flex flex-col bg-bg/95 px-5 pb-8 pt-6 backdrop-blur-md sm:px-8"
           initial={prefersReducedMotion ? false : { opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={prefersReducedMotion ? undefined : { opacity: 0 }}
           transition={{ duration: 0.25, ease: EASE }}
         >
-          <nav aria-label="Navegación principal" className="flex flex-1 flex-col justify-center">
+          <nav aria-label={t('nav.navAria')} className="flex flex-1 flex-col justify-center">
             <ul>
-              {NAV_LINKS.map((link) => (
+              {navLinks.map((link) => (
                 <li key={link.id}>
                   <a
                     href={`#${link.id}`}
@@ -98,8 +101,13 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
               ))}
             </ul>
           </nav>
+          {/* Selector de idioma ES | EN dentro del panel (sus botones entran
+              en el focus trap al igual que links y CTA). */}
+          <div className="mb-5 flex justify-center">
+            <LanguageToggle />
+          </div>
           <Button href="#contacto" variant="primary" className="w-full" onClick={onClose}>
-            Contacto
+            {t('nav.cta')}
           </Button>
         </motion.div>
       ) : null}

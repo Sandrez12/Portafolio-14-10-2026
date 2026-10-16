@@ -1,4 +1,4 @@
-import { contacts } from '../../data/profile';
+import { useContent } from '../../i18n';
 import { ContactIcon } from '../info/icons';
 import { TiltCard } from '../ui/TiltCard';
 
@@ -9,6 +9,8 @@ import { TiltCard } from '../ui/TiltCard';
  * caso) y enlaces accesibles con `aria-label`. Sin sombras (tokens).
  */
 export function ContactChannels() {
+  const { contacts } = useContent();
+
   return (
     <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
       {contacts.map((contact) => {

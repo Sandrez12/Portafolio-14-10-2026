@@ -1,4 +1,5 @@
 import type { Project } from '../../types';
+import { useT } from '../../i18n';
 import { AnimatedNumber } from '../ui/AnimatedNumber';
 import { Button } from '../ui/Button';
 import { Stagger, StaggerItem } from '../ui/Stagger';
@@ -24,6 +25,7 @@ interface FeaturedProjectProps {
  * estado y autoría. Sin sombras: panel + ring.
  */
 export function FeaturedProject({ project, index, onOpen }: FeaturedProjectProps) {
+  const t = useT();
   const status = STATUS_STYLES[project.status];
   const metrics = project.metrics ?? [];
   // Numeración enorme de dos dígitos (p. ej. «01»), decorativa.
@@ -47,10 +49,10 @@ export function FeaturedProject({ project, index, onOpen }: FeaturedProjectProps
                   className={`h-1.5 w-1.5 rounded-full ${status.dot}`}
                   aria-hidden="true"
                 />
-                {status.label}
+                {t(status.label)}
               </span>
               <span className="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium text-ink-muted ring-1 ring-inset ring-teal">
-                {teamBadgeLabel(project.teamProject)}
+                {t(teamBadgeLabel(project.teamProject))}
               </span>
             </div>
           </div>
@@ -107,17 +109,17 @@ export function FeaturedProject({ project, index, onOpen }: FeaturedProjectProps
               variant="primary"
               onClick={(event) => onOpen(project, event.currentTarget)}
             >
-              Ver detalle
+              {t('projects.viewDetail')}
             </Button>
             <Button
               variant="ghost"
               href={project.repoUrl}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label={`Código de ${project.title} en GitHub`}
+              aria-label={t('projects.codeOnGithubAria', { title: project.title })}
             >
               <GithubIcon size={16} />
-              Código en GitHub
+              {t('projects.codeOnGithub')}
             </Button>
           </div>
         </div>

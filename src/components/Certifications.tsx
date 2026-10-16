@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion, useInView, useReducedMotion } from 'framer-motion';
-import { certifications } from '../data/certifications';
+import { useContent, useT } from '../i18n';
 import { CertCard } from './certifications/CertCard';
 import { CertFilter } from './certifications/CertFilter';
 import { ISSUER_FILTERS, type IssuerFilter } from './certifications/filters';
@@ -16,6 +16,8 @@ import { SectionHeading } from './ui/SectionHeading';
  * de navegación los aporta el wrapper de `App.tsx`.
  */
 export function Certifications() {
+  const t = useT();
+  const { certifications } = useContent();
   const prefersReducedMotion = useReducedMotion();
   const [issuer, setIssuer] = useState<IssuerFilter>('Todas');
   const [hasFiltered, setHasFiltered] = useState(false);
@@ -24,7 +26,7 @@ export function Certifications() {
 
   const filtered = useMemo(
     () => (issuer === 'Todas' ? certifications : certifications.filter((c) => c.issuer === issuer)),
-    [issuer],
+    [issuer, certifications],
   );
 
   const handleChange = (next: IssuerFilter) => {
@@ -36,9 +38,9 @@ export function Certifications() {
     <section aria-labelledby="certifications-title" className="py-14 sm:py-20">
       <SectionHeading
         id="certifications-title"
-        eyebrow="Credenciales"
-        title="certificaciones"
-        subtitle="Seis insignias obtenidas en 2025 en cloud, datos, IA y redes."
+        eyebrow={t('certs.eyebrow')}
+        title={t('certs.title')}
+        subtitle={t('certs.subtitle')}
       />
 
       {/* Línea decorativa con el año común de las certificaciones. */}

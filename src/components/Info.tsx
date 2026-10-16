@@ -1,4 +1,4 @@
-import { contacts, education, languages } from '../data/profile';
+import { useContent, useT } from '../i18n';
 import { Reveal } from './ui/Reveal';
 import { SectionHeading } from './ui/SectionHeading';
 import { ContactList } from './info/ContactList';
@@ -15,6 +15,9 @@ const PANEL_TITLE_CLASS = 'text-lg font-semibold text-ink';
  * #102E2E sin sombra con gutter colgante en desktop, ver `_spec/BRIEF.md`).
  */
 export function Info() {
+  const t = useT();
+  const { contacts, education, languages } = useContent();
+
   return (
     <section
       aria-labelledby="trayectoria-title contacts-title languages-title"
@@ -22,9 +25,9 @@ export function Info() {
     >
       <SectionHeading
         id="trayectoria-title"
-        eyebrow="educación y experiencia"
-        title="trayectoria"
-        subtitle="Formación académica y experiencias que han marcado mi camino."
+        eyebrow={t('info.eyebrow')}
+        title={t('info.title')}
+        subtitle={t('info.subtitle')}
       />
 
       <div className="mt-12 lg:mt-16">
@@ -34,7 +37,7 @@ export function Info() {
       <div className="mt-12 grid gap-10 md:grid-cols-2 md:gap-8 lg:mt-16">
         <Reveal delay={0.05}>
           <h3 id="contacts-title" className={PANEL_TITLE_CLASS}>
-            Contacto
+            {t('info.contactsTitle')}
           </h3>
           <div className="mt-4">
             <ContactList contacts={contacts} />
@@ -42,7 +45,7 @@ export function Info() {
         </Reveal>
         <Reveal delay={0.15}>
           <h3 id="languages-title" className={PANEL_TITLE_CLASS}>
-            Idiomas
+            {t('info.languagesTitle')}
           </h3>
           <div className="mt-4">
             <LanguageBars languages={languages} />

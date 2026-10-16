@@ -1,17 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useReducedMotion } from 'framer-motion';
-
-/**
- * Roles EXACTOS del CV que rotan en la línea de máquina de escribir del hero.
- * NO añadir textos que no estén en el CV (ver `_spec/V2_BRIEF.md`).
- */
-const ROLE_TEXTS = [
-  'Estudiante de Ingeniería de Sistemas',
-  'Python · Java · Kotlin',
-  'Bases de datos SQL y NoSQL',
-  'Desarrollo web con React y Laravel',
-  'Nube: AWS y Azure IoT Central',
-] as const;
+import { useT } from '../../i18n';
 
 /** Velocidades de la máquina de escribir (ms por acción). */
 const TYPE_MS = 55;
@@ -29,6 +18,13 @@ const GAP_MS = 350;
  * con los cinco roles completos.
  */
 export function TypewriterRoles() {
+  const t = useT();
+  // Roles EXACTOS del CV (traducidos; NO añadir textos que no estén en el
+  // CV, ver `_spec/V2_BRIEF.md`). `t` sólo cambia con el idioma.
+  const roleTexts = useMemo(
+    () => [t('hero.role1'), t('hero.role2'), t('hero.role3'), t('hero.role4'), t('hero.role5')],
+    [t],
+  );
   const prefersReducedMotion = useReducedMotion() ?? false;
   const [roleIndex, setRoleIndex] = useState(0);
   const [charCount, setCharCount] = useState(0);
@@ -36,7 +32,7 @@ export function TypewriterRoles() {
 
   useEffect(() => {
     if (prefersReducedMotion) return;
-    const text = ROLE_TEXTS[roleIndex];
+    const text = roleTexts[roleIndex];
     let timeout: number | undefined;
 
     if (!deleting) {
@@ -50,22 +46,22 @@ export function TypewriterRoles() {
     } else {
       timeout = window.setTimeout(() => {
         setDeleting(false);
-        setRoleIndex((index) => (index + 1) % ROLE_TEXTS.length);
+        setRoleIndex((index) => (index + 1) % roleTexts.length);
       }, GAP_MS);
     }
 
     return () => window.clearTimeout(timeout);
-  }, [prefersReducedMotion, roleIndex, charCount, deleting]);
+  }, [prefersReducedMotion, roleTexts, roleIndex, charCount, deleting]);
 
   const visibleText = prefersReducedMotion
-    ? ROLE_TEXTS[0]
-    : ROLE_TEXTS[roleIndex].slice(0, charCount);
+    ? roleTexts[0]
+    : roleTexts[roleIndex].slice(0, charCount);
 
   return (
     <div>
       {/* Contenido completo para lectores de pantalla. */}
       <ul className="sr-only">
-        {ROLE_TEXTS.map((role) => (
+        {roleTexts.map((role) => (
           <li key={role}>{role}</li>
         ))}
       </ul>

@@ -1,5 +1,7 @@
 import { motion, useReducedMotion } from 'framer-motion';
+import { useT } from '../../i18n';
 import type { ProjectTag } from '../../types';
+import { FILTER_LABEL_KEYS } from './filterLabels';
 import { EASE } from '../ui/motion';
 
 /** Filtro de proyectos: "Todos" o una de las etiquetas de dominio. */
@@ -22,10 +24,15 @@ const BASE_CLASSES =
  * `prefers-reduced-motion`).
  */
 export function TagFilter({ active, options, onChange }: TagFilterProps) {
+  const t = useT();
   const prefersReducedMotion = useReducedMotion();
 
   return (
-    <div role="group" aria-label="Filtrar proyectos por categoría" className="flex flex-wrap gap-2">
+    <div
+      role="group"
+      aria-label={t('projects.filterGroupLabel')}
+      className="flex flex-wrap gap-2"
+    >
       {options.map((option) => {
         const isActive = option === active;
         return (
@@ -48,7 +55,7 @@ export function TagFilter({ active, options, onChange }: TagFilterProps) {
                 transition={{ duration: 0.4, ease: EASE }}
               />
             )}
-            <span className="relative z-10">{option}</span>
+            <span className="relative z-10">{t(FILTER_LABEL_KEYS[option])}</span>
           </button>
         );
       })}

@@ -1,5 +1,5 @@
 import { motion, useReducedMotion } from 'framer-motion';
-import { CV_URL } from '../data/profile';
+import { useContent, useT } from '../i18n';
 import { ContactChannels } from './contact/ContactChannels';
 import { EmailCta } from './contact/EmailCta';
 import { InkBackdrop } from './contact/InkBackdrop';
@@ -17,6 +17,8 @@ import { EASE } from './ui/motion';
  * ver `_spec/V2_BRIEF.md`). Reduced-motion: entradas estáticas.
  */
 export function Contact() {
+  const t = useT();
+  const { cvUrl } = useContent();
   const prefersReducedMotion = useReducedMotion() ?? false;
 
   return (
@@ -27,7 +29,9 @@ export function Contact() {
       <InkBackdrop />
 
       <div className="relative mx-auto w-full max-w-container px-5 sm:px-8">
-        <p className="text-xs font-semibold uppercase tracking-[0.3em] text-accent">Contacto</p>
+        <p className="text-xs font-semibold uppercase tracking-[0.3em] text-accent">
+          {t('contact.eyebrow')}
+        </p>
 
         <motion.h2
           id="contacto-title"
@@ -38,13 +42,12 @@ export function Contact() {
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 0.8, ease: EASE }}
         >
-          ¿Hablamos?
+          {t('contact.title')}
         </motion.h2>
 
         <Reveal delay={0.15}>
           <p className="mt-6 max-w-prose text-lg leading-relaxed text-ink-muted">
-            ¿Tienes una idea, un proyecto o una pregunta? Escríbeme por cualquiera de estos
-            canales: la conversación empieza con un correo.
+            {t('contact.intro')}
           </p>
         </Reveal>
 
@@ -57,10 +60,8 @@ export function Contact() {
         <div className="mt-12 grid gap-10 lg:mt-16 lg:grid-cols-[minmax(0,11fr)_minmax(0,9fr)] lg:gap-14">
           <Reveal delay={0.1}>
             <div className="rounded-2xl bg-panel p-6 sm:p-8">
-              <h3 className="text-lg font-semibold text-ink">Escribe desde aquí</h3>
-              <p className="mt-1.5 text-sm text-ink-muted">
-                Completa los campos y abre un borrador en tu cliente de correo.
-              </p>
+              <h3 className="text-lg font-semibold text-ink">{t('contact.formTitle')}</h3>
+              <p className="mt-1.5 text-sm text-ink-muted">{t('contact.formSubtitle')}</p>
               <div className="mt-6">
                 <MailtoForm />
               </div>
@@ -69,7 +70,7 @@ export function Contact() {
 
           <Reveal delay={0.2}>
             <div>
-              <h3 className="text-lg font-semibold text-ink">Canales directos</h3>
+              <h3 className="text-lg font-semibold text-ink">{t('contact.channelsTitle')}</h3>
               <div className="mt-4">
                 <ContactChannels />
               </div>
@@ -77,10 +78,10 @@ export function Contact() {
           </Reveal>
         </div>
 
-        {CV_URL !== '' ? (
+        {cvUrl !== '' ? (
           <Reveal delay={0.25} className="mt-10">
-            <Button href={CV_URL} variant="primary">
-              Descargar CV
+            <Button href={cvUrl} variant="primary" download>
+              {t('contact.downloadCv')}
             </Button>
           </Reveal>
         ) : null}

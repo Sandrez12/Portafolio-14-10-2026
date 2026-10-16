@@ -1,6 +1,6 @@
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { useCallback, useMemo, useState } from 'react';
-import { projects } from '../data/projects';
+import { useContent, useT } from '../i18n';
 import type { Project } from '../types';
 import { FeaturedProject } from './projects/FeaturedProject';
 import { ProjectCard } from './projects/ProjectCard';
@@ -19,6 +19,8 @@ const FILTER_OPTIONS: readonly ProjectFilter[] = ['Todos', 'IA', 'IoT', 'Web', '
  * transform/opacity; sin movimiento con `prefers-reduced-motion`).
  */
 export function Projects() {
+  const { projects } = useContent();
+  const t = useT();
   const prefersReducedMotion = useReducedMotion();
   const [filter, setFilter] = useState<ProjectFilter>('Todos');
   const [selected, setSelected] = useState<Project | null>(null);
@@ -30,15 +32,15 @@ export function Projects() {
   const gridProjects = useMemo(() => {
     const byTag = filter === 'Todos' ? projects : projects.filter((p) => p.tag === filter);
     return featured ? byTag.filter((p) => p.id !== featured.id) : byTag;
-  }, [filter, featured]);
+  }, [filter, featured, projects]);
 
   return (
     <section aria-labelledby="projects-title" className="relative py-16 sm:py-20 lg:py-24">
       <SectionHeading
         id="projects-title"
-        eyebrow="Trabajo seleccionado"
-        title="proyectos"
-        subtitle="Cinco proyectos con el código disponible en GitHub: inteligencia artificial, IoT, web y móvil. Cada uno explica qué es, su estado real y cuál fue mi aporte."
+        eyebrow={t('projects.eyebrow')}
+        title={t('projects.title')}
+        subtitle={t('projects.subtitle')}
       />
 
       <Reveal className="mt-8">
@@ -54,7 +56,7 @@ export function Projects() {
       <motion.ul
         layout={!prefersReducedMotion}
         className="mt-8 grid list-none gap-6 p-0 md:grid-cols-2"
-        aria-label="Lista de proyectos"
+        aria-label={t('projects.listLabel')}
       >
         <AnimatePresence mode="popLayout" initial={false}>
           {gridProjects.map((project) => (

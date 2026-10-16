@@ -1,3 +1,4 @@
+import { useT } from '../../i18n';
 import type { IssuerFilter } from './filters';
 
 interface CertFilterProps {
@@ -17,10 +18,12 @@ const BASE_CLASSES =
  * color estático (sin animación, seguro con reduced-motion).
  */
 export function CertFilter({ active, options, onChange, className }: CertFilterProps) {
+  const t = useT();
+
   return (
     <div
       role="group"
-      aria-label="Filtrar certificaciones por emisor"
+      aria-label={t('certs.filterAria')}
       className={`flex flex-wrap gap-2 ${className ?? ''}`}
     >
       {options.map((option) => {
@@ -37,7 +40,7 @@ export function CertFilter({ active, options, onChange, className }: CertFilterP
                 : `${BASE_CLASSES} border-teal text-ink-muted hover:border-accent hover:text-ink`
             }
           >
-            {option}
+            {option === 'Todas' ? t('certs.all') : option}
           </button>
         );
       })}

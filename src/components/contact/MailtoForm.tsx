@@ -1,5 +1,5 @@
 import { useId, useState, type ChangeEvent, type FormEvent } from 'react';
-import { profile } from '../../data/profile';
+import { useContent, useT, type TranslateFn } from '../../i18n';
 import { Button } from '../ui/Button';
 
 /** Valores controlados del mini-formulario generador de mailto. */
@@ -21,17 +21,17 @@ const FIELD_CLASSES =
 
 const ERROR_CLASSES = 'mt-1.5 text-sm text-accent';
 
-/** Validación mínima honesta de los tres campos. */
-function validate(values: FormValues): FormErrors {
+/** Validación mínima honesta de los tres campos (mensajes por idioma vía `t`). */
+function validate(values: FormValues, t: TranslateFn): FormErrors {
   const errors: FormErrors = {};
   if (values.name.trim().length < 2) {
-    errors.name = 'Escribe tu nombre (al menos 2 caracteres).';
+    errors.name = t('contact.nameError');
   }
   if (values.subject.trim().length < 3) {
-    errors.subject = 'Escribe un asunto (al menos 3 caracteres).';
+    errors.subject = t('contact.subjectError');
   }
   if (values.message.trim().length < 10) {
-    errors.message = 'Escribe tu mensaje (al menos 10 caracteres).';
+    errors.message = t('contact.messageError');
   }
   return errors;
 }
@@ -44,6 +44,8 @@ function validate(values: FormValues): FormErrors {
  * cliente de correo del visitante.
  */
 export function MailtoForm() {
+  const t = useT();
+  const { profile } = useContent();
   const formId = useId();
   const [values, setValues] = useState<FormValues>(EMPTY_VALUES);
   const [errors, setErrors] = useState<FormErrors>({});
@@ -67,11 +69,15 @@ export function MailtoForm() {
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const nextErrors = validate(values);
+    const nextErrors = validate(values, t);
     setErrors(nextErrors);
     if (nextErrors.name || nextErrors.subject || nextErrors.message) return;
 
-    const body = `Hola Andrés, soy ${values.name.trim()}:\n\n${values.message.trim()}`;
+    // Texto fijo del cuerpo del mailto, traducido según el idioma activo.
+    const body = t('contact.mailBody', {
+      name: values.name.trim(),
+      message: values.message.trim(),
+    });
     const mailto = `mailto:${profile.email}?subject=${encodeURIComponent(
       values.subject.trim(),
     )}&body=${encodeURIComponent(body)}`;
@@ -83,14 +89,14 @@ export function MailtoForm() {
       <div className="grid gap-5">
         <div>
           <label htmlFor={`${formId}-name`} className={LABEL_CLASSES}>
-            Nombre
+            {t('contact.nameLabel')}
           </label>
           <input
             id={`${formId}-name`}
             name="name"
             type="text"
             autoComplete="name"
-            placeholder="Tu nombre"
+            placeholder={t('contact.namePlaceholder')}
             value={values.name}
             onChange={handleChange('name')}
             aria-invalid={errors.name ? true : undefined}
@@ -106,14 +112,14 @@ export function MailtoForm() {
 
         <div>
           <label htmlFor={`${formId}-subject`} className={LABEL_CLASSES}>
-            Asunto
+            {t('contact.subjectLabel')}
           </label>
           <input
             id={`${formId}-subject`}
             name="subject"
             type="text"
             autoComplete="off"
-            placeholder="De qué quieres hablar"
+            placeholder={t('contact.subjectPlaceholder')}
             value={values.subject}
             onChange={handleChange('subject')}
             aria-invalid={errors.subject ? true : undefined}
@@ -129,13 +135,13 @@ export function MailtoForm() {
 
         <div>
           <label htmlFor={`${formId}-message`} className={LABEL_CLASSES}>
-            Mensaje
+            {t('contact.messageLabel')}
           </label>
           <textarea
             id={`${formId}-message`}
             name="message"
             rows={4}
-            placeholder="Cuéntame tu idea, proyecto o pregunta"
+            placeholder={t('contact.messagePlaceholder')}
             value={values.message}
             onChange={handleChange('message')}
             aria-invalid={errors.message ? true : undefined}
@@ -151,10 +157,10 @@ export function MailtoForm() {
 
         <div>
           <Button type="submit" variant="primary" className="w-full sm:w-auto">
-            Abrir en mi correo
+            {t('contact.submit')}
           </Button>
           <p className="mt-3 text-xs leading-relaxed text-ink-muted">
-            Se abrirá tu cliente de correo; no se envía ningún dato a servidores.
+            {t('contact.privacyNote')}
           </p>
         </div>
       </div>

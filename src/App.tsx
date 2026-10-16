@@ -14,6 +14,7 @@ import { Stats } from './components/Stats';
 import { Container } from './components/ui/Container';
 import { Grain } from './components/ui/Grain';
 import { SectionDivider } from './components/ui/SectionDivider';
+import { useT } from './i18n';
 
 /**
  * Layout base V2 (ver `_spec/V2_BRIEF.md`): sin contenedor único; cada
@@ -30,10 +31,11 @@ import { SectionDivider } from './components/ui/SectionDivider';
  * cambiar a la técnica que prefieran manteniendo esa garantía.
  */
 export default function App() {
+  const t = useT();
   return (
     <div className="min-h-screen bg-bg font-sans text-ink">
       <a href="#main" className="skip-link">
-        Saltar al contenido principal
+        {t('common.skipLink')}
       </a>
       <Nav />
       <CursorGlow />

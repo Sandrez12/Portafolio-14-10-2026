@@ -2,11 +2,12 @@ import { useId, useMemo, useRef, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import type { Project, ProjectMetric } from '../../types';
-import { projects } from '../../data/projects';
+import { useContent, useT } from '../../i18n';
 import { Button } from '../ui/Button';
 import { EASE } from '../ui/motion';
 import { ArchitectureDiagram } from './ArchitectureDiagram';
 import { GithubIcon } from './icons';
+import { FILTER_LABEL_KEYS } from './filterLabels';
 import { STATUS_STYLES, teamBadgeLabel } from './status';
 import { useDialogA11y } from './useDialogA11y';
 
@@ -21,8 +22,8 @@ function formatMetricValue(metric: ProjectMetric): string {
   return `${metric.prefix ?? ''}${metric.value.toFixed(metric.decimals ?? 0)}${metric.suffix ?? ''}`;
 }
 
-/** Número 01–05 según la posición en `src/data/projects.ts` (nada inventado). */
-function projectNumber(id: string): string | null {
+/** Número 01–05 según la posición en la lista de proyectos del idioma activo (nada inventado). */
+function projectNumber(projects: readonly Project[], id: string): string | null {
   const index = projects.findIndex((p) => p.id === id);
   return index >= 0 ? String(index + 1).padStart(2, '0') : null;
 }
@@ -60,6 +61,8 @@ function Pill({ children }: { children: ReactNode }) {
  * `src/data/projects.ts`: sin demos ni datos inventados.
  */
 export function ProjectModal({ project, onClose }: ProjectModalProps) {
+  const { projects } = useContent();
+  const t = useT();
   const prefersReducedMotion = useReducedMotion() ?? false;
   const dialogRef = useRef<HTMLDivElement | null>(null);
   const closeRef = useRef<HTMLButtonElement | null>(null);
@@ -67,7 +70,10 @@ export function ProjectModal({ project, onClose }: ProjectModalProps) {
 
   useDialogA11y({ open: project !== null, onClose, dialogRef, initialFocusRef: closeRef });
 
-  const number = useMemo(() => (project ? projectNumber(project.id) : null), [project]);
+  const number = useMemo(
+    () => (project ? projectNumber(projects, project.id) : null),
+    [project, projects],
+  );
 
   // Entrada/salida: opacity + translateY/scale con el easing del sistema; con
   // reduced-motion sólo opacity (sin movimiento).
@@ -103,7 +109,7 @@ export function ProjectModal({ project, onClose }: ProjectModalProps) {
             <button
               ref={closeRef}
               type="button"
-              aria-label="Cerrar detalle del proyecto"
+              aria-label={t('projects.closeDialog')}
               onClick={onClose}
               className="absolute right-4 top-4 z-10 inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full border border-teal/60 bg-bg/90 text-xl leading-none text-ink-muted transition-colors hover:border-accent hover:text-ink"
             >
@@ -122,16 +128,18 @@ export function ProjectModal({ project, onClose }: ProjectModalProps) {
                     </span>
                   )}
                   <Pill>
-                    <span className="font-semibold uppercase tracking-wide text-ink">{project.tag}</span>
+                    <span className="font-semibold uppercase tracking-wide text-ink">
+                      {t(FILTER_LABEL_KEYS[project.tag])}
+                    </span>
                   </Pill>
                   <Pill>
                     <span
                       aria-hidden="true"
                       className={`h-1.5 w-1.5 rounded-full ${STATUS_STYLES[project.status].dot}`}
                     />
-                    {STATUS_STYLES[project.status].label}
+                    {t(STATUS_STYLES[project.status].label)}
                   </Pill>
-                  <Pill>{teamBadgeLabel(project.teamProject)}</Pill>
+                  <Pill>{t(teamBadgeLabel(project.teamProject))}</Pill>
                 </div>
                 <div>
                   <h2
@@ -148,7 +156,7 @@ export function ProjectModal({ project, onClose }: ProjectModalProps) {
 
               <p className="break-words text-base leading-relaxed text-ink-muted">{project.description}</p>
 
-              <ModalSection title="Puntos clave">
+              <ModalSection title={t('projects.sectionKeyPoints')}>
                 <ul className="flex flex-col gap-2">
                   {project.highlights.map((highlight) => (
                     <li key={highlight} className="flex gap-3 text-sm leading-relaxed text-ink-muted">
@@ -162,7 +170,7 @@ export function ProjectModal({ project, onClose }: ProjectModalProps) {
               </ModalSection>
 
               {project.metrics && project.metrics.length > 0 ? (
-                <ModalSection title="Métricas verificadas">
+                <ModalSection title={t('projects.sectionMetrics')}>
                   <dl className="grid grid-cols-2 gap-3 sm:grid-cols-4">
                     {project.metrics.map((metric) => (
                       <div
@@ -178,11 +186,11 @@ export function ProjectModal({ project, onClose }: ProjectModalProps) {
                   </dl>
                 </ModalSection>
               ) : null}
-              <ModalSection title="Arquitectura">
+              <ModalSection title={t('projects.sectionArchitecture')}>
                 <ArchitectureDiagram diagram={project.architecture} />
               </ModalSection>
 
-              <ModalSection title="Stack">
+              <ModalSection title={t('projects.sectionStack')}>
                 <ul className="flex flex-wrap gap-2">
                   {project.stack.map((tech) => (
                     <li
@@ -195,11 +203,11 @@ export function ProjectModal({ project, onClose }: ProjectModalProps) {
                 </ul>
               </ModalSection>
 
-              <ModalSection title="Mi aporte">
+              <ModalSection title={t('projects.sectionContribution')}>
                 <p className="break-words text-sm leading-relaxed text-ink-muted">{project.contribution}</p>
               </ModalSection>
 
-              <ModalSection title="Siguiente paso">
+              <ModalSection title={t('projects.sectionNextStep')}>
                 <p className="break-words text-sm leading-relaxed text-ink-muted">{project.nextStep}</p>
               </ModalSection>
 
@@ -215,7 +223,7 @@ export function ProjectModal({ project, onClose }: ProjectModalProps) {
               <footer className="mt-1 flex flex-wrap items-center gap-3">
                 <Button href={project.repoUrl} target="_blank" rel="noopener noreferrer">
                   <GithubIcon size={16} />
-                  Código en GitHub
+                  {t('projects.codeOnGithub')}
                 </Button>
               </footer>
             </div>

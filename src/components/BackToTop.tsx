@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { useT } from '../i18n';
 import { EASE } from './ui/motion';
 
 /** Aparece tras este umbral de scroll (px). */
@@ -11,6 +12,7 @@ const SHOW_AFTER = 600;
  * al tope usa `behavior: smooth` sólo sin reduced-motion.
  */
 export function BackToTop() {
+  const t = useT();
   const [visible, setVisible] = useState(false);
   const prefersReducedMotion = useReducedMotion();
 
@@ -40,7 +42,7 @@ export function BackToTop() {
       {visible ? (
         <motion.button
           type="button"
-          aria-label="Volver arriba"
+          aria-label={t('nav.backToTop')}
           onClick={() => window.scrollTo({ top: 0, behavior: prefersReducedMotion ? 'auto' : 'smooth' })}
           initial={prefersReducedMotion ? false : { opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}

@@ -248,7 +248,7 @@ export function HeroArt({ className = 'h-full w-full', parallaxX, parallaxY }: H
         <div className="absolute left-[2%] top-[24%] motion-safe:animate-float motion-safe:[animation-delay:1.8s]">
           <svg viewBox="0 0 44 40" className="h-auto w-10">
             <path
-              d="M12 8 C6 8 4 14 4 20 C4 26 6 32 12 32 C18 32 20 26 20 20 C20 14 18 8 12 8 Z M40 8 C34 8 32 14 32 20 C32 26 34 32 40 32"
+              d="M17 6 C11 6 11 10 11 14 C11 18 9 20 5 20 C9 20 11 22 11 26 C11 30 11 34 17 34 M27 6 C33 6 33 10 33 14 C33 18 35 20 39 20 C35 20 33 22 33 26 C33 30 33 34 27 34"
               fill="none"
               stroke="#BC3A3A"
               strokeWidth="4"

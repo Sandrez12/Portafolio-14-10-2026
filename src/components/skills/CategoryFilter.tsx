@@ -1,3 +1,4 @@
+import { useT } from '../../i18n';
 import type { SkillFilterId } from './types';
 
 /** Opción del filtro de categorías (id estable + label visible del CV). */
@@ -20,10 +21,12 @@ interface CategoryFilterProps {
  * respeta reduced-motion por construcción.
  */
 export function CategoryFilter({ options, value, onChange }: CategoryFilterProps) {
+  const t = useT();
+
   return (
     <div
       role="group"
-      aria-label="Filtrar habilidades por categoría"
+      aria-label={t('skills.filterAria')}
       className="flex flex-wrap justify-center gap-2.5"
     >
       {options.map((option) => {

@@ -1,3 +1,4 @@
+import { useT } from '../../i18n';
 import type { SkillCategory } from '../../types';
 import { Reveal } from '../ui/Reveal';
 import { Stagger, StaggerItem } from '../ui/Stagger';
@@ -15,6 +16,8 @@ interface SoftSkillsCloudProps {
  * nunca inventar niveles de dominio).
  */
 export function SoftSkillsCloud({ category }: SoftSkillsCloudProps) {
+  const t = useT();
+
   return (
     <Reveal className="mt-16 sm:mt-20">
       <div className="flex items-center gap-3">
@@ -22,7 +25,7 @@ export function SoftSkillsCloud({ category }: SoftSkillsCloudProps) {
           <CategoryIcon id="blandas" className="h-5 w-5" />
         </span>
         <h3 className="font-sans text-xl font-bold lowercase leading-none text-ink">
-          habilidades blandas
+          {t('skills.softTitle')}
         </h3>
       </div>
 

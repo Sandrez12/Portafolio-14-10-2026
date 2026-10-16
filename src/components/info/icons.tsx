@@ -186,9 +186,10 @@ const journeyIcons: Record<JourneyIconId, IconComponent> = {
  * título (las entradas exactas viven en `src/data/profile.ts`).
  */
 function journeyIconId(entry: EducationEntry): JourneyIconId {
-  if (entry.title.includes('Ingeniería')) return 'university';
-  if (entry.title.includes('Voluntario')) return 'volunteer';
-  if (entry.title.includes('Bachillerato')) return 'school';
+  const title = entry.title.toLowerCase();
+  if (title.includes('ingeniería') || title.includes('engineering')) return 'university';
+  if (title.includes('voluntario') || title.includes('volunteer')) return 'volunteer';
+  if (title.includes('bachillerato') || title.includes('high school')) return 'school';
   return 'primary';
 }
 

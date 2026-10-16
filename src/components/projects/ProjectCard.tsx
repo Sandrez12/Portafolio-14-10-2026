@@ -1,4 +1,5 @@
 import type { Project } from '../../types';
+import { useT } from '../../i18n';
 import { Button } from '../ui/Button';
 import { TiltCard } from '../ui/TiltCard';
 import { GithubIcon } from './icons';
@@ -24,6 +25,7 @@ interface ProjectCardProps {
  * accesos «Ver detalle» (modal) y «Código en GitHub» (pestaña nueva).
  */
 export function ProjectCard({ project, index, onOpen }: ProjectCardProps) {
+  const t = useT();
   const status = STATUS_STYLES[project.status];
   const chips = project.stack.slice(0, MAX_CHIPS);
   const restCount = project.stack.length - chips.length;
@@ -48,11 +50,11 @@ export function ProjectCard({ project, index, onOpen }: ProjectCardProps) {
                 className={`h-1.5 w-1.5 rounded-full ${status.dot}`}
                 aria-hidden="true"
               />
-              {status.label}
+              {t(status.label)}
             </span>
             {/* Autoría: equipo vs individual. */}
             <span className="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium text-ink-muted ring-1 ring-inset ring-teal">
-              {teamBadgeLabel(project.teamProject)}
+              {t(teamBadgeLabel(project.teamProject))}
             </span>
           </div>
         </div>
@@ -82,7 +84,7 @@ export function ProjectCard({ project, index, onOpen }: ProjectCardProps) {
           {restCount > 0 ? (
             <li
               className="rounded-md px-2 py-1 text-xs font-medium text-accent ring-1 ring-inset ring-accent"
-              aria-label={`y ${restCount} tecnologías más`}
+              aria-label={t('projects.moreTechsAria', { count: restCount })}
             >
               +{restCount}
             </li>
@@ -95,17 +97,17 @@ export function ProjectCard({ project, index, onOpen }: ProjectCardProps) {
             variant="primary"
             onClick={(event) => onOpen(project, event.currentTarget)}
           >
-            Ver detalle
+            {t('projects.viewDetail')}
           </Button>
           <Button
             variant="ghost"
             href={project.repoUrl}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label={`Código de ${project.title} en GitHub`}
+            aria-label={t('projects.codeOnGithubAria', { title: project.title })}
           >
             <GithubIcon size={16} />
-            Código en GitHub
+            {t('projects.codeOnGithub')}
           </Button>
         </div>
       </div>

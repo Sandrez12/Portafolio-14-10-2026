@@ -1,13 +1,14 @@
-import { useRef } from 'react';
+import { useMemo, useRef } from 'react';
 import { useInView } from 'framer-motion';
 import { siCss3, siHtml5, siJavascript, siPhp } from 'simple-icons';
-import { skillCategories } from '../data/skills';
+import { useContent, useT } from '../i18n';
 import { getTileIcon } from './skills/tile-icons';
 import { SectionHeading } from './ui/SectionHeading';
+import type { SkillCategory } from '../types';
 
-/** Skills de una categoría del CV (todas salen de `src/data/skills.ts`). */
-const categorySkills = (id: string): string[] =>
-  skillCategories.find((category) => category.id === id)?.skills ?? [];
+/** Skills de una categoría del CV (todas salen de `skillCategories`). */
+const categorySkills = (categories: SkillCategory[], id: string): string[] =>
+  categories.find((category) => category.id === id)?.skills ?? [];
 
 /**
  * Etiqueta corta de marquee para el nombre largo del CV (misma tecnología,
@@ -16,19 +17,6 @@ const categorySkills = (id: string): string[] =>
 const MARQUEE_LABELS: Record<string, string> = {
   'Microsoft Azure (IoT Central)': 'Azure',
 };
-
-/** Fila 1: lenguajes + web (datos del CV). */
-const ROW_A: string[] = [...categorySkills('lenguajes'), ...categorySkills('web')];
-
-/** Fila 2: bases de datos + móvil + nube (datos del CV). */
-const ROW_B: string[] = [
-  ...categorySkills('bases-de-datos'),
-  ...categorySkills('movil'),
-  ...categorySkills('nube-e-infraestructura').filter((tech) => tech !== 'Infraestructura y redes'),
-];
-
-/** Tecnologías únicas para la lista accesible (sr-only). */
-const ALL_TECHS: string[] = [...new Set([...ROW_A, ...ROW_B])];
 
 /**
  * Paths extra de `simple-icons` que la banda de tiles no necesita pero el
@@ -164,27 +152,49 @@ function MarqueeRow({ items, trackClass, animate }: MarqueeRowProps) {
  * con wrap (sólo se muestra la mitad original).
  */
 export function Marquee() {
+  const { skillCategories } = useContent();
+  const t = useT();
   const sectionRef = useRef<HTMLElement | null>(null);
   // Rendimiento: la animación sólo corre mientras la banda está en/near el
   // viewport (una vez fuera, el track pierde la clase de animación).
   const inView = useInView(sectionRef, { margin: '96px' });
+
+  // Filas a partir de las categorías del idioma activo (mismos datos del CV;
+  // `skillCategories` sólo cambia de referencia con el idioma).
+  const { rowA, rowB, allTechs } = useMemo(() => {
+    /** Fila 1: lenguajes + web (datos del CV). */
+    const rowA: string[] = [...categorySkills(skillCategories, 'lenguajes'), ...categorySkills(skillCategories, 'web')];
+
+    /** Fila 2: bases de datos + móvil + nube (datos del CV). */
+    const rowB: string[] = [
+      ...categorySkills(skillCategories, 'bases-de-datos'),
+      ...categorySkills(skillCategories, 'movil'),
+      ...categorySkills(skillCategories, 'nube-e-infraestructura').filter(
+        (tech) => tech !== 'Infraestructura y redes',
+      ),
+    ];
+
+    /** Tecnologías únicas para la lista accesible (sr-only). */
+    const allTechs: string[] = [...new Set([...rowA, ...rowB])];
+    return { rowA, rowB, allTechs };
+  }, [skillCategories]);
 
   return (
     <section ref={sectionRef} aria-labelledby="marquee-title" className="relative bg-band">
       {/* Encabezado y contenido completo ocultos a la vista (una banda de
           marquee no lleva título visible) pero accesibles para lectores. */}
       <div className="sr-only">
-        <SectionHeading id="marquee-title" title="Tecnologías" />
+        <SectionHeading id="marquee-title" title={t('about.marqueeTitle')} />
         <ul>
-          {ALL_TECHS.map((tech) => (
+          {allTechs.map((tech) => (
             <li key={tech}>{MARQUEE_LABELS[tech] ?? tech}</li>
           ))}
         </ul>
       </div>
 
-      <MarqueeRow items={ROW_A} animate={inView} trackClass="[animation-duration:36s]" />
+      <MarqueeRow items={rowA} animate={inView} trackClass="[animation-duration:36s]" />
       <MarqueeRow
-        items={ROW_B}
+        items={rowB}
         animate={inView}
         trackClass="[animation-direction:reverse] [animation-duration:48s]"
       />

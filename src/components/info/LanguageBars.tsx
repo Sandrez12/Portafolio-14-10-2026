@@ -1,4 +1,5 @@
 import { motion, useReducedMotion } from 'framer-motion';
+import { useT } from '../../i18n';
 import type { Language } from '../../types';
 import { EASE } from '../ui/motion';
 
@@ -6,11 +7,14 @@ interface LanguageBarsProps {
   languages: Language[];
 }
 
-/** Etiquetas cortas que cuelgan en el gutter (es/en/pt). */
+/** Etiquetas cortas que cuelgan en el gutter (es/en/pt), por nombre ES o EN. */
 const SHORT_LABELS: Record<string, string> = {
   Español: 'es',
+  Spanish: 'es',
   Inglés: 'en',
+  English: 'en',
   Portugués: 'pt',
+  Portuguese: 'pt',
 };
 
 const shortLabel = (language: Language): string =>
@@ -27,6 +31,7 @@ const SEGMENT_STAGGER = 0.08;
  * Reduced-motion: barra completa estática.
  */
 export function LanguageBars({ languages }: LanguageBarsProps) {
+  const t = useT();
   const prefersReducedMotion = useReducedMotion() ?? false;
 
   return (
@@ -52,7 +57,12 @@ export function LanguageBars({ languages }: LanguageBarsProps) {
                 </div>
                 <div
                   role="img"
-                  aria-label={`${language.name}: nivel ${language.level} (${language.filledSegments} de ${language.totalSegments} segmentos)`}
+                  aria-label={t('info.languageLevelAriaLabel', {
+                    name: language.name,
+                    level: language.level,
+                    filled: language.filledSegments,
+                    total: language.totalSegments,
+                  })}
                   className="mt-2 grid h-2 gap-[5px]"
                   style={{
                     gridTemplateColumns: `repeat(${language.totalSegments}, minmax(0, 1fr))`,

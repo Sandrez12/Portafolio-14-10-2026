@@ -1,4 +1,4 @@
-import { profile } from '../data/profile';
+import { useContent, useT } from '../i18n';
 import { HighlightedSummary } from './about/HighlightedSummary';
 import { PhotoFrame } from './about/PhotoFrame';
 import { QuickFacts } from './about/QuickFacts';
@@ -17,13 +17,16 @@ import { SectionHeading } from './ui/SectionHeading';
  * prefers-reduced-motion (Reveal/Stagger/AnimatedNumber/TiltCard).
  */
 export function About() {
+  const { profile } = useContent();
+  const t = useT();
+
   return (
     <section id="about" aria-labelledby="about-title" className="relative mt-16 sm:mt-20 lg:mt-24">
       <SectionHeading
         id="about-title"
-        eyebrow="Perfil"
-        title="¿quién soy?"
-        subtitle="Estudiante de Ingeniería de Sistemas, responsable y ordenado, con curiosidad y deseo constante de aprender."
+        eyebrow={t('about.eyebrow')}
+        title={t('about.title')}
+        subtitle={t('about.subtitle')}
       />
 
       {/* Columna grande: foto entintada + resumen en tipografía grande. */}

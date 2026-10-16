@@ -1,8 +1,8 @@
 import { useRef, type PointerEventHandler } from 'react';
 import { motion, useMotionValue, useReducedMotion, useSpring } from 'framer-motion';
 import { siGithub, siLinkedin } from 'simple-icons';
-import { CV_URL, profile } from '../data/profile';
 import { useIsDesktopPointer } from '../hooks/useIsDesktopPointer';
+import { useContent, useT } from '../i18n';
 import { HeroEdge } from './decor/HeroEdge';
 import { HeroArt } from './hero/HeroArt';
 import { HeroTitle } from './hero/HeroTitle';
@@ -10,22 +10,6 @@ import { ScrollIndicator } from './hero/ScrollIndicator';
 import { TypewriterRoles } from './hero/TypewriterRoles';
 import { Button } from './ui/Button';
 import { EASE } from './ui/motion';
-
-/** Enlaces sociales del hero (datos de `src/data/profile.ts`). */
-const SOCIAL_LINKS = [
-  {
-    id: 'github',
-    label: 'GitHub de Andrés (se abre en pestaña nueva)',
-    href: profile.githubUrl,
-    path: siGithub.path,
-  },
-  {
-    id: 'linkedin',
-    label: 'LinkedIn de Andrés (se abre en pestaña nueva)',
-    href: profile.linkedinUrl,
-    path: siLinkedin.path,
-  },
-] as const;
 
 /**
  * Hero V2: sección full-bleed con altura de ~una pantalla (clamp
@@ -43,6 +27,25 @@ const SOCIAL_LINKS = [
  * valores nunca se actualizan (capas estáticas).
  */
 export function Hero() {
+  const { profile, cvUrl } = useContent();
+  const t = useT();
+
+  /** Enlaces sociales del hero (datos del perfil del idioma activo). */
+  const socialLinks = [
+    {
+      id: 'github',
+      label: t('hero.githubAria'),
+      href: profile.githubUrl,
+      path: siGithub.path,
+    },
+    {
+      id: 'linkedin',
+      label: t('hero.linkedinAria'),
+      href: profile.linkedinUrl,
+      path: siLinkedin.path,
+    },
+  ] as const;
+
   const prefersReducedMotion = useReducedMotion() ?? false;
   const isDesktopPointer = useIsDesktopPointer();
   const canParallax = isDesktopPointer && !prefersReducedMotion;
@@ -119,20 +122,20 @@ export function Hero() {
         >
           <div className="flex flex-wrap items-center gap-3 sm:gap-4">
             <Button href="#proyectos" variant="primary">
-              Ver proyectos
+              {t('hero.viewProjects')}
             </Button>
             <Button href="#contacto" variant="ghost">
-              Contacto
+              {t('hero.contact')}
             </Button>
-            {CV_URL !== '' ? (
-              <Button href={CV_URL} variant="ghost" target="_blank" rel="noopener noreferrer">
-                Descargar CV
+            {cvUrl !== '' ? (
+              <Button href={cvUrl} variant="ghost" target="_blank" rel="noopener noreferrer">
+                {t('hero.downloadCv')}
               </Button>
             ) : null}
           </div>
 
           <ul className="flex items-center gap-3">
-            {SOCIAL_LINKS.map((link) => (
+            {socialLinks.map((link) => (
               <li key={link.id}>
                 <a
                   href={link.href}

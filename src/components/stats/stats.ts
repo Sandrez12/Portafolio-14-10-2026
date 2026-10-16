@@ -1,3 +1,4 @@
+import type { MessageKey } from '../../i18n';
 import type { StatItem } from './types';
 
 /**
@@ -51,3 +52,26 @@ export const STATS: readonly StatItem[] = [
     context: 'del dataset de señas con el que se entrenó y evaluó el traductor.',
   },
 ];
+
+/**
+ * Claves de mensajes (stats.*) de la etiqueta y la frase de contexto de cada
+ * cifra, por id estable; los literales ES son EXACTAMENTE los de STATS y el
+ * EN vive en `src/i18n/messages/stats.ts`.
+ */
+export const STAT_LABEL_KEYS: Record<string, MessageKey> = {
+  proyectos: 'stats.labelProyectos',
+  certificaciones: 'stats.labelCertificaciones',
+  idiomas: 'stats.labelIdiomas',
+  'glosas-lsc': 'stats.labelGlosasLsc',
+  'accuracy-lsc': 'stats.labelAccuracyLsc',
+  'videos-lsc': 'stats.labelVideosLsc',
+};
+
+export const STAT_CONTEXT_KEYS: Record<string, MessageKey> = {
+  proyectos: 'stats.contextProyectos',
+  certificaciones: 'stats.contextCertificaciones',
+  idiomas: 'stats.contextIdiomas',
+  'glosas-lsc': 'stats.contextGlosasLsc',
+  'accuracy-lsc': 'stats.contextAccuracyLsc',
+  'videos-lsc': 'stats.contextVideosLsc',
+};

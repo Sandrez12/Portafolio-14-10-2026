@@ -1,3 +1,4 @@
+import { useT } from '../../i18n';
 import { Ornament } from '../ui/Ornament';
 import { Reveal } from '../ui/Reveal';
 import { Stagger, StaggerItem } from '../ui/Stagger';
@@ -67,46 +68,45 @@ function CloudIcon() {
 /**
  * "Qué hago" V2: 4 áreas basadas SOLO en el CV y los proyectos verificados
  * (ver `_spec/BRIEF.md`; nada inventado: mismos stack, certificaciones y
- * módulos de los proyectos).
- */
-const AREAS = [
-  {
-    id: 'bases-de-datos',
-    icon: <DatabaseIcon />,
-    title: 'Bases de datos SQL y NoSQL',
-    text: 'Construcción y desarrollo de bases de datos con MySQL, MongoDB, Oracle y Oracle APEX, con certificación Introduction to MongoDB.',
-  },
-  {
-    id: 'web',
-    icon: <WebIcon />,
-    title: 'Desarrollo web',
-    text: 'Frontend y backend con HTML, CSS, JavaScript, PHP, Laravel, React y Flask; proyectos como el Gestor de Inventario y MoodJournal.',
-  },
-  {
-    id: 'ia',
-    icon: <NeuralIcon />,
-    title: 'IA aplicada',
-    text: 'Traducción de señas de la LSC con una red LSTM bidireccional y clasificación de dibujos en Cognia; certificaciones AWS de Machine Learning para NLP y Generative AI Foundations.',
-  },
-  {
-    id: 'iot-nube',
-    icon: <CloudIcon />,
-    title: 'IoT y nube',
-    text: 'AWS y Azure IoT Central; plataforma de telemetría con ingesta MQTT, gemelo digital, reglas y alertas.',
-  },
-];
-
-/**
- * "Qué hago": 4 tarjetas panel con icono SVG propio, título y 1–2 frases del
- * CV/proyectos. Entrada escalonada (`Stagger`), hover con elevación y ring
- * accent (sólo transform y colores).
+ * módulos de los proyectos). Los textos viven en `i18n/messages/about.ts`.
  */
 export function WhatIDo() {
+  const t = useT();
+
+  const AREAS = [
+    {
+      id: 'bases-de-datos',
+      icon: <DatabaseIcon />,
+      title: t('about.areaDbTitle'),
+      text: t('about.areaDbText'),
+    },
+    {
+      id: 'web',
+      icon: <WebIcon />,
+      title: t('about.areaWebTitle'),
+      text: t('about.areaWebText'),
+    },
+    {
+      id: 'ia',
+      icon: <NeuralIcon />,
+      title: t('about.areaAiTitle'),
+      text: t('about.areaAiText'),
+    },
+    {
+      id: 'iot-nube',
+      icon: <CloudIcon />,
+      title: t('about.areaIotTitle'),
+      text: t('about.areaIotText'),
+    },
+  ];
+
   return (
     <div>
       <Reveal className="mb-6 flex items-center gap-3">
         <Ornament className="h-9 w-5 shrink-0" />
-        <h3 className="font-sans text-xl font-bold leading-tight text-ink sm:text-2xl">Qué hago</h3>
+        <h3 className="font-sans text-xl font-bold leading-tight text-ink sm:text-2xl">
+          {t('about.whatIDoTitle')}
+        </h3>
       </Reveal>
 
       <Stagger as="ul" className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">

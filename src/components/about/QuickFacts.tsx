@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { useContent, useT } from '../../i18n';
 import { AnimatedNumber } from '../ui/AnimatedNumber';
 import { Reveal } from '../ui/Reveal';
 
@@ -57,41 +58,18 @@ function FolderIcon() {
 
 /**
  * "Datos rápidos" V2: 4 tarjetas panel con icono propio y cifras del CV
- * (ver `_spec/V2_BRIEF.md`: sólo estas cifras están permitidas). Los valores
- * numéricos cuentan con `AnimatedNumber`; el año de inicio de la carrera es
- * un dato fijo (contarlo no tendría sentido). Reduced-motion: valor final
- * directo (comportamiento de `AnimatedNumber`).
+ * (ver `_spec/V2_BRIEF.md`: sólo estas cifras están permitidas). Las cifras
+ * provienen de `useContent()` (idiomas, certificaciones, proyectos); el año
+ * de inicio de la carrera es un dato fijo (contarlo no tendría sentido).
+ * Reduced-motion: valor final directo (comportamiento de `AnimatedNumber`).
  */
-const FACTS: { id: string; icon: ReactNode; value: ReactNode; label: string; sub: string }[] = [
-  {
-    id: 'carrera',
-    icon: <GraduationCapIcon />,
-    value: '2023',
-    label: 'Ingeniería de Sistemas',
-    sub: 'UNAB · estudiante desde 2023',
-  },
-  {
-    id: 'idiomas',
-    icon: <GlobeIcon />,
-    value: <AnimatedNumber value={3} />,
-    label: 'Idiomas',
-    sub: 'Español nativo · Inglés C1 · Portugués básico',
-  },
-  {
-    id: 'certificaciones',
-    icon: <BadgeIcon />,
-    value: <AnimatedNumber value={6} />,
-    label: 'Certificaciones',
-    sub: 'MongoDB, Cisco y AWS Academy (2025)',
-  },
-  {
-    id: 'proyectos',
-    icon: <FolderIcon />,
-    value: <AnimatedNumber value={5} />,
-    label: 'Proyectos',
-    sub: 'IA, IoT, web y móvil',
-  },
-];
+interface Fact {
+  id: string;
+  icon: ReactNode;
+  value: ReactNode;
+  label: string;
+  sub: string;
+}
 
 /**
  * "Datos rápidos": 4 tarjetas panel con icono, cifra grande (font-display) y
@@ -99,9 +77,43 @@ const FACTS: { id: string; icon: ReactNode; value: ReactNode; label: string; sub
  * `Reveal` (delay por índice).
  */
 export function QuickFacts() {
+  const { languages, certifications, projects } = useContent();
+  const t = useT();
+
+  const facts: Fact[] = [
+    {
+      id: 'carrera',
+      icon: <GraduationCapIcon />,
+      value: '2023',
+      label: t('about.factCareerLabel'),
+      sub: t('about.factCareerSub'),
+    },
+    {
+      id: 'idiomas',
+      icon: <GlobeIcon />,
+      value: <AnimatedNumber value={languages.length} />,
+      label: t('about.factLanguagesLabel'),
+      sub: t('about.factLanguagesSub'),
+    },
+    {
+      id: 'certificaciones',
+      icon: <BadgeIcon />,
+      value: <AnimatedNumber value={certifications.length} />,
+      label: t('about.factCertsLabel'),
+      sub: t('about.factCertsSub'),
+    },
+    {
+      id: 'proyectos',
+      icon: <FolderIcon />,
+      value: <AnimatedNumber value={projects.length} />,
+      label: t('about.factProjectsLabel'),
+      sub: t('about.factProjectsSub'),
+    },
+  ];
+
   return (
     <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      {FACTS.map((fact, index) => (
+      {facts.map((fact, index) => (
         <Reveal
           as="li"
           key={fact.id}
