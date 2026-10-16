@@ -1,0 +1,94 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-bg font-sans text-ink antialiased;
+    /* Red de seguridad anti scroll horizontal: los sangrados full-bleed
+       (calc(50% - 50vw) y márgenes negativos medidos) llegan EXACTAMENTE
+       hasta el borde; clip evita cualquier píxel extra sin crear un
+       scroll-container (no rompe position: sticky). */
+    overflow-x: clip;
+  }
+
+  /* Foco visible consistente en el color de acento */
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible,
+  [tabindex]:focus-visible {
+    outline: 2px solid theme('colors.accent');
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  ::selection {
+    background-color: theme('colors.accent');
+    color: theme('colors.ink');
+  }
+
+  /* Scrollbar sutil acorde a la paleta (thin + colores del sistema) */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: theme('colors.teal') theme('colors.bg');
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: theme('colors.bg');
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: theme('colors.teal');
+    border-radius: 999px;
+    border: 2px solid theme('colors.bg');
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: theme('colors.accent');
+  }
+
+  /* Respeto a usuarios que prefieren menos movimiento */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  /* Skip link: oculto hasta recibir foco por teclado */
+  .skip-link {
+    @apply fixed left-4 top-4 z-50 -translate-y-24 rounded-md bg-accent px-4 py-2 text-sm font-semibold text-ink transition-transform duration-200;
+  }
+
+  .skip-link:focus {
+    @apply translate-y-0;
+  }
+}
+
+@layer utilities {
+  /* Tipografía equilibrada para títulos (ej. en SectionHeading/subtítulos) */
+  .text-balance {
+    text-wrap: balance;
+  }
+}
