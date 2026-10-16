@@ -39,3 +39,6 @@ lerna-debug.log*
 _spec/
 _reference-design.jpeg
 .vercel
+
+.vercel
+.env*
